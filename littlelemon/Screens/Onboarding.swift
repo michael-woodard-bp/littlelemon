@@ -28,21 +28,75 @@ struct Onboarding: View {
     var body: some View {
         NavigationView {
             VStack {
+                Navbar()
+                VStack {
+                    HStack {
+                        Text("Little Lemon")
+                            .font(.largeTitle.bold())
+                            .foregroundColor(Color("Primary2"))
+                            .padding([.leading, .top])
+                        Spacer()
+                    }
+                    HStack {
+                        VStack {
+                            HStack {
+                                Text("Chicago")
+                                    .font(.title.bold())
+                                    .padding([.leading])
+                                Spacer()
+                            }
+                            Text("We are a family owned Mediterranean restaurant, focused on traditional recipes served with a modern twist.")
+                                .font(.callout)
+                        }
+                        .foregroundColor(Color.white)
+                        Image("hero-image")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 150, height: 150)
+                            .clipped()
+                            .cornerRadius(8)
+                            .padding([.leading, .trailing])
+                    }
+                    .padding([.bottom])
+                }
+                .frame(maxWidth: .infinity)
+                .background(Color("Primary1"))
                 NavigationLink(destination: Home(), isActive: $isLoggedIn) {
                     EmptyView()
                 }
-                TextField("First Name", text: $firstName)
-                TextField("Last Name", text: $lastName)
-                TextField("Email", text: $email)
-                Button("Register") {
-                    if (!firstName.isEmpty && !lastName.isEmpty && !email.isEmpty && isValidEmail(email)) {
-                        UserDefaults.standard.set(firstName, forKey: kFirstName)
-                        UserDefaults.standard.set(lastName, forKey: kLastName)
-                        UserDefaults.standard.set(email, forKey: kEmail)
-                        UserDefaults.standard.set(true, forKey: kIsLoggedIn)
-                        isLoggedIn = true
+                Form {
+                    Section(header: Text("First Name *")) {
+                        TextField("First Name", text: $firstName)                            .padding()
+                            .overlay(RoundedRectangle(cornerRadius: 10.0).strokeBorder(Color("Primary1"), style: StrokeStyle(lineWidth: 1.0)))
+                    }
+                    Section(header: Text("Last Name *")) {
+                        TextField("Last Name", text: $lastName)
+                            .padding()
+                            .overlay(RoundedRectangle(cornerRadius: 10.0).strokeBorder(Color("Primary1"), style: StrokeStyle(lineWidth: 1.0)))
+                    }
+                    Section(header: Text("Email *")) {
+                        TextField("Email", text: $email)
+                            .padding()
+                            .overlay(RoundedRectangle(cornerRadius: 10.0).strokeBorder(Color("Primary1"), style: StrokeStyle(lineWidth: 1.0)))
+                    }
+                    Section {
+                        Button("Register") {
+                            if (!firstName.isEmpty && !lastName.isEmpty && !email.isEmpty && isValidEmail(email)) {
+                                UserDefaults.standard.set(firstName, forKey: kFirstName)
+                                UserDefaults.standard.set(lastName, forKey: kLastName)
+                                UserDefaults.standard.set(email, forKey: kEmail)
+                                UserDefaults.standard.set(true, forKey: kIsLoggedIn)
+                                isLoggedIn = true
+                            }
+                        }
+                        .padding()
+                        .foregroundColor(Color.white)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .background(Color("Primary1"))
+                        .cornerRadius(8)
                     }
                 }
+                .scrollContentBackground(.hidden)
             }
             .onAppear() {
                 if (UserDefaults.standard.bool(forKey: "kIsLoggedIn") == true) {

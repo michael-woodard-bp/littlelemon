@@ -15,17 +15,34 @@ struct UserProfile: View {
     @Environment(\.presentationMode) var presentation
     
     var body: some View {
-        VStack {
-            Text("Personal Information")
-            Image("profile-image-placeholder")
-            Text(firstName ?? "")
-            Text(lastName ?? "")
-            Text(email ?? "")
-            Button("Logout") {
-                UserDefaults.standard.set(false, forKey: "kIsLoggedIn")
-                self.presentation.wrappedValue.dismiss()
+        NavigationView {
+            VStack {
+                Form {
+                    Section {
+                        Image("profile-image-placeholder")
+                    }
+                    Section {
+                        Text("First Name: \(firstName ?? "")")
+                    }
+                    Section {
+                        Text("Last Name: \(lastName ?? "")")
+                    }
+                    Section {
+                        Text("Email: \(email ?? "")")
+                    }
+                    Button("Logout") {
+                        UserDefaults.standard.set(false, forKey: "kIsLoggedIn")
+                        self.presentation.wrappedValue.dismiss()
+                    }
+                    .padding()
+                    .foregroundColor(Color.white)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .background(Color("Primary2"))
+                    .cornerRadius(8)
+                }
+                .navigationTitle(Text("Personal Information"))
+                .scrollContentBackground(.hidden)
             }
-            Spacer()
         }
     }
 }

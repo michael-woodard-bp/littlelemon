@@ -48,31 +48,141 @@ struct Menu: View {
         searchText.isEmpty ? NSPredicate(value: true) : NSPredicate(format: "title CONTAINS[cd] %@", searchText)
     }
     
+    func formatPrice(priceStr: String) -> String {
+        if let price = Float(priceStr) {
+            let spacing = price < 10 ? " " : ""
+            return "$ " + spacing + String(format: "%.2f", price)
+        } else {
+            return ""
+        }
+    }
+    
     var body: some View {
         VStack {
-            Text("Little Lemon")
-            Text("Chicago")
-            Text("We are a family owned Mediterranean restaurant, focused on traditional recipes served with a modern twist.")
-            TextField("Search menu", text: $searchText)
+            Navbar()
+            VStack {
+                HStack {
+                    Text("Little Lemon")
+                        .font(.largeTitle.bold())
+                        .foregroundColor(Color("Primary2"))
+                        .padding([.leading, .top])
+                    Spacer()
+                }
+                HStack {
+                    VStack {
+                        HStack {
+                            Text("Chicago")
+                                .font(.title.bold())
+                                .padding([.leading])
+                            Spacer()
+                        }
+                        Text("We are a family owned Mediterranean restaurant, focused on traditional recipes served with a modern twist.")
+                            .font(.callout)
+                    }
+                    .foregroundColor(Color.white)
+                    Image("hero-image")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 150, height: 150)
+                        .clipped()
+                        .cornerRadius(8)
+                        .padding([.leading, .trailing])
+                }
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                    TextField("Search menu", text: $searchText)
+                }
+                .padding()
+                .foregroundColor(.black)
+                .background()
+                .cornerRadius(9)
+                .frame(alignment: .center)
+                .padding()
+            }
+            .frame(maxWidth: .infinity)
+            .background(Color("Primary1"))
+            VStack {
+                HStack {
+                    Text("ORDER FOR DELIVERY!")
+                        .font(.title3.bold())
+                        .padding([.leading, .top])
+                    Spacer()
+                }
+                HStack {
+                    Spacer()
+                    Button("Starters") {
+                        
+                    }
+                    .padding(8)
+                    .background(Color("Secondary1"))
+                    .cornerRadius(20)
+                    Spacer()
+                    Button("Mains") {
+                        
+                    }
+                    .padding(8)
+                    .background(Color("Secondary1"))
+                    .cornerRadius(20)
+                    Spacer()
+                    Button("Desserts") {
+                        
+                    }
+                    .padding(8)
+                    .background(Color("Secondary1"))
+                    .cornerRadius(20)
+                    Spacer()
+                    Button("Drinks") {
+                        
+                    }
+                    .padding(8)
+                    .background(Color("Secondary1"))
+                    .cornerRadius(20)
+                    Spacer()
+                }
+                Divider()
+                    .padding([.top])
+            }
             FetchedObjects(
                 predicate: buildPredicate(),
                 sortDescriptors: buildSortDescriptors()
             ) {(dishes: [Dish]) in
-                List {
+                ScrollView {
                     ForEach(dishes, id: \.self) { dish in
                         NavigationLink(destination: MenuItemDetails(menuItem: dish)) {
-                            HStack {
-                                Text("\(dish.title!) \(dish.price!)")
-                                AsyncImage(url: URL(string: dish.image!)) { image in
-                                    image.resizable()
-                                } placeholder: {
-                                    ProgressView()
+                            VStack {
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Text("\(dish.title!)")
+                                            .font(.title3.bold())
+                                            .frame(alignment: .leading)
+                                        Spacer()
+                                        Text("\(dish.info!)")
+                                            .lineLimit(2)
+                                            .multilineTextAlignment(.leading)
+                                        Spacer()
+                                        Text("\(formatPrice(priceStr: dish.price!))")
+                                            .font(.headline)
+                                    }
+                                    .foregroundColor(.black)
+                                    .padding()
+                                    Spacer()
+                                    AsyncImage(url: URL(string: dish.image!)) { image in
+                                        image.resizable()
+                                    } placeholder: {
+                                        ProgressView()
+                                    }
+                                    .scaledToFill()
+                                    .frame(width: 100, height: 100)
+                                    .clipped()
+                                    .cornerRadius(8)
+                                    .padding()
                                 }
-                                .frame(width: 100, height: 100)
+                                Divider()
                             }
                         }
                     }
                 }
+                .scrollContentBackground(.hidden)
             }
         }
         .onAppear() {
